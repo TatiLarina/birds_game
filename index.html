@@ -52,6 +52,21 @@
     canvas.width = W;
     canvas.height = H;
 
+    // Helper function for rounded rectangles
+    function drawRoundRect(x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+
     // Game states
     const STATE = { MENU: 0, PLAYING: 1, GAMEOVER: 2 };
     let gameState = STATE.MENU;
@@ -868,8 +883,7 @@
     function drawHUD() {
         // Score
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
-        ctx.beginPath();
-        ctx.roundRect(10, 10, 120, 40, 10);
+        drawRoundRect(10, 10, 120, 40, 10);
         ctx.fill();
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 20px Comic Sans MS, cursive';
@@ -878,8 +892,7 @@
 
         // Lives
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
-        ctx.beginPath();
-        ctx.roundRect(W - 110, 10, 100, 40, 10);
+        drawRoundRect(W - 110, 10, 100, 40, 10);
         ctx.fill();
         for (let i = 0; i < lives; i++) {
             ctx.fillStyle = '#EF5350';
@@ -889,8 +902,7 @@
 
         // Speed indicator
         ctx.fillStyle = 'rgba(0,0,0,0.4)';
-        ctx.beginPath();
-        ctx.roundRect(W/2 - 40, 10, 80, 25, 8);
+        drawRoundRect(W/2 - 40, 10, 80, 25, 8);
         ctx.fill();
         ctx.fillStyle = '#fff';
         ctx.font = '12px Comic Sans MS, cursive';
@@ -955,8 +967,7 @@
             ctx.fillStyle = isSelected ? 'rgba(255, 215, 0, 0.3)' : 'rgba(255,255,255,0.1)';
             ctx.strokeStyle = isSelected ? '#FFD740' : 'rgba(255,255,255,0.3)';
             ctx.lineWidth = isSelected ? 3 : 1;
-            ctx.beginPath();
-            ctx.roundRect(W/2 - 140, y - 30, 280, 80, 15);
+            drawRoundRect(W/2 - 140, y - 30, 280, 80, 15);
             ctx.fill();
             ctx.stroke();
 
@@ -999,8 +1010,7 @@
         ctx.fillStyle = 'rgba(30, 30, 60, 0.95)';
         ctx.strokeStyle = '#FFD740';
         ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.roundRect(W/2 - 160, H/2 - 150, 320, 300, 20);
+        drawRoundRect(W/2 - 160, H/2 - 150, 320, 300, 20);
         ctx.fill();
         ctx.stroke();
 
@@ -1048,8 +1058,7 @@
         // Restart button
         let btnY = H/2 + 90;
         ctx.fillStyle = '#4CAF50';
-        ctx.beginPath();
-        ctx.roundRect(W/2 - 80, btnY, 160, 45, 12);
+        drawRoundRect(W/2 - 80, btnY, 160, 45, 12);
         ctx.fill();
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 16px Comic Sans MS, cursive';
@@ -1187,23 +1196,6 @@
             gameState = STATE.PLAYING;
         }
     });
-
-    // Polyfill roundRect
-    if (!ctx.roundRect) {
-        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-            if (typeof r === 'number') r = [r, r, r, r];
-            this.moveTo(x + r[0], y);
-            this.lineTo(x + w - r[1], y);
-            this.quadraticCurveTo(x + w, y, x + w, y + r[1]);
-            this.lineTo(x + w, y + h - r[2]);
-            this.quadraticCurveTo(x + w, y + h, x + w - r[2], y + h);
-            this.lineTo(x + r[3], y + h);
-            this.quadraticCurveTo(x, y + h, x, y + h - r[3]);
-            this.lineTo(x, y + r[0]);
-            this.quadraticCurveTo(x, y, x + r[0], y);
-            this.closePath();
-        };
-    }
 
     // Start
     generateBackground();
