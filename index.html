@@ -77,9 +77,9 @@
 
         // Bird types
         var BIRDS = {
-            pigeon: { name: 'Голубь', difficulty: 1, speed: 3, size: 28, desc: 'Толстый, медленный', flapForce: -7 },
-            tit: { name: 'Синичка', difficulty: 2, speed: 4.5, size: 22, desc: 'Маленькая, средняя', flapForce: -8 },
-            swallow: { name: 'Ласточка', difficulty: 3, speed: 6.5, size: 18, desc: 'Очень быстрая', flapForce: -9 }
+            pigeon: { name: 'Голубь', difficulty: 1, speed: 2, size: 28, desc: 'Толстый, медленный', flapForce: -7 },
+            tit: { name: 'Синичка', difficulty: 2, speed: 3, size: 22, desc: 'Маленькая, средняя', flapForce: -8 },
+            swallow: { name: 'Ласточка', difficulty: 3, speed: 4, size: 18, desc: 'Очень быстрая', flapForce: -9 }
         };
 
         // Game variables
@@ -373,7 +373,7 @@
                 drawEllipse(3, 4, s * 0.6, s * 0.5);
                 // Wing
                 ctx.fillStyle = '#667788';
-                var wingFlap = Math.sin(frameCount * 0.3) * 8;
+                var wingFlap = Math.sin(frameCount * 0.1) * 8;
                 drawEllipse(-5, -2 + wingFlap, s * 0.5, s * 0.7);
                 // Head
                 ctx.fillStyle = '#778899';
@@ -414,7 +414,7 @@
                 drawEllipse(0, -2, s * 0.15, s * 0.6);
                 // Wing
                 ctx.fillStyle = '#4FC3F7';
-                var wingFlap = Math.sin(frameCount * 0.4) * 10;
+                var wingFlap = Math.sin(frameCount * 0.12) * 10;
                 drawEllipse(-4, -2 + wingFlap, s * 0.4, s * 0.6);
                 // Head
                 ctx.fillStyle = '#1565C0';
@@ -452,7 +452,7 @@
                 drawEllipse(2, 3, s * 0.45, s * 0.35);
                 // Wings
                 ctx.fillStyle = '#283593';
-                var wingFlap = Math.sin(frameCount * 0.5) * 12;
+                var wingFlap = Math.sin(frameCount * 0.15) * 12;
                 ctx.beginPath();
                 ctx.moveTo(-3, 0);
                 ctx.lineTo(-s * 1.2, -s * 0.8 + wingFlap);
@@ -678,7 +678,7 @@
         function initGame() {
             var birdConfig = BIRDS[selectedBird];
             bird = {
-                x: 80, y: H / 2, vy: 0,
+                x: W / 2, y: H / 2, vy: 0,
                 size: birdConfig.size,
                 type: selectedBird,
                 flapForce: birdConfig.flapForce
@@ -689,7 +689,7 @@
             scorePopups = [];
             score = 0;
             lives = 3;
-            gameSpeed = 1;
+            gameSpeed = 0.6;
             spawnTimer = 0;
             wormTimer = 0;
             groundOffset = 0;
@@ -871,31 +871,28 @@
 
             var birdKeys = ['pigeon', 'tit', 'swallow'];
             var birdNames = ['\u0413\u043E\u043B\u0443\u0431\u044C', '\u0421\u0438\u043D\u0438\u0447\u043A\u0430', '\u041B\u0430\u0441\u0442\u043E\u0447\u043A\u0430'];
-            var birdDescs = ['\u0422\u043E\u043B\u0441\u0442\u044B\u0439, \u043C\u0435\u0434\u043B\u0435\u043D\u043D\u044B\u0439', '\u041C\u0430\u043B\u0435\u043D\u044C\u043A\u0430\u044F, \u0441\u0440\u0435\u0434\u043D\u044F\u044F', '\u041E\u0447\u0435\u043D\u044C \u0431\u044B\u0441\u0442\u0440\u0430\u044F'];
             var birdDiff = ['\u2B50', '\u2B50\u2B50', '\u2B50\u2B50\u2B50'];
 
             for (var i = 0; i < 3; i++) {
-                var y = 220 + i * 100;
+                var y = 220 + i * 80;
                 var isSelected = menuSelection === i;
                 ctx.fillStyle = isSelected ? 'rgba(255, 215, 0, 0.3)' : 'rgba(255,255,255,0.1)';
                 ctx.strokeStyle = isSelected ? '#FFD740' : 'rgba(255,255,255,0.3)';
                 ctx.lineWidth = isSelected ? 3 : 1;
-                roundRect(W/2 - 140, y - 30, 280, 80, 15);
+                roundRect(W/2 - 140, y - 25, 280, 60, 15);
                 ctx.fill();
                 ctx.stroke();
 
-                var tempBird = { x: W/2 - 80, y: y + 10, size: BIRDS[birdKeys[i]].size, type: birdKeys[i], vy: 0 };
+                var tempBird = { x: W/2 - 80, y: y + 5, size: BIRDS[birdKeys[i]].size, type: birdKeys[i], vy: 0 };
                 drawBird(tempBird);
 
                 ctx.fillStyle = '#fff';
                 ctx.font = 'bold 16px Comic Sans MS, cursive';
                 ctx.textAlign = 'left';
                 ctx.fillText(birdNames[i], W/2 - 40, y);
-                ctx.font = '13px Comic Sans MS, cursive';
-                ctx.fillStyle = '#ccc';
-                ctx.fillText(birdDescs[i], W/2 - 40, y + 20);
                 ctx.fillStyle = '#FFD740';
-                ctx.fillText(birdDiff[i], W/2 - 40, y + 38);
+                ctx.font = '14px Comic Sans MS, cursive';
+                ctx.fillText(birdDiff[i], W/2 - 40, y + 20);
             }
 
             ctx.textAlign = 'center';
@@ -915,7 +912,7 @@
             ctx.fillStyle = 'rgba(30, 30, 60, 0.95)';
             ctx.strokeStyle = '#FFD740';
             ctx.lineWidth = 3;
-            roundRect(W/2 - 160, H/2 - 150, 320, 300, 20);
+            roundRect(W/2 - 160, H/2 - 150, 320, 340, 20);
             ctx.fill();
             ctx.stroke();
 
@@ -957,21 +954,25 @@
 
             var btnY = H/2 + 90;
             ctx.fillStyle = '#4CAF50';
-            roundRect(W/2 - 80, btnY, 160, 45, 12);
+            roundRect(W/2 - 80, btnY, 160, 40, 12);
             ctx.fill();
             ctx.fillStyle = '#fff';
-            ctx.font = 'bold 16px Comic Sans MS, cursive';
-            ctx.fillText('\u0418\u0433\u0440\u0430\u0442\u044C \u0441\u043D\u043E\u0432\u0430', W/2, btnY + 28);
+            ctx.font = 'bold 15px Comic Sans MS, cursive';
+            ctx.fillText('\u0418\u0433\u0440\u0430\u0442\u044C \u0441\u043D\u043E\u0432\u0430', W/2, btnY + 25);
 
-            ctx.fillStyle = '#666';
-            ctx.font = '13px Comic Sans MS, cursive';
-            ctx.fillText('M \u2014 \u0432 \u043C\u0435\u043D\u044E', W/2, btnY + 65);
+            var btnMenuY = btnY + 50;
+            ctx.fillStyle = '#5C6BC0';
+            roundRect(W/2 - 80, btnMenuY, 160, 40, 12);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 15px Comic Sans MS, cursive';
+            ctx.fillText('\u0412 \u043C\u0435\u043D\u044E', W/2, btnMenuY + 25);
         }
 
         function draw() {
             ctx.clearRect(0, 0, W, H);
             ctx.save();
-            if (shakeTimer > 0) {
+            if (shakeTimer > 0 && gameState === STATE_PLAYING) {
                 ctx.translate(
                     (Math.random() - 0.5) * shakeTimer,
                     (Math.random() - 0.5) * shakeTimer
@@ -1048,8 +1049,8 @@
             if (gameState === STATE_MENU) {
                 var birdKeys = ['pigeon', 'tit', 'swallow'];
                 for (var i = 0; i < 3; i++) {
-                    var y = 220 + i * 100;
-                    if (mx > W/2 - 140 && mx < W/2 + 140 && my > y - 30 && my < y + 50) {
+                    var y = 220 + i * 80;
+                    if (mx > W/2 - 140 && mx < W/2 + 140 && my > y - 25 && my < y + 35) {
                         menuSelection = i;
                         selectedBird = birdKeys[i];
                         initGame();
@@ -1060,9 +1061,13 @@
                 flap();
             } else if (gameState === STATE_GAMEOVER) {
                 var btnY = H/2 + 90;
-                if (mx > W/2 - 80 && mx < W/2 + 80 && my > btnY && my < btnY + 45) {
+                if (mx > W/2 - 80 && mx < W/2 + 80 && my > btnY && my < btnY + 40) {
                     initGame();
                     gameState = STATE_PLAYING;
+                }
+                var btnMenuY = btnY + 50;
+                if (mx > W/2 - 80 && mx < W/2 + 80 && my > btnMenuY && my < btnMenuY + 40) {
+                    gameState = STATE_MENU;
                 }
             }
         });
