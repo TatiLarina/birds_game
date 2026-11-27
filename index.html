@@ -107,6 +107,7 @@
         var shakeTimer = 0;
         var invincibleTimer = 0;
         var scorePopups = [];
+        var keysDown = {};
 
         // Load high score
         try {
@@ -699,11 +700,7 @@
             generateBackground();
         }
 
-        function flap() {
-            if (gameState === STATE_PLAYING) {
-                bird.vy = bird.flapForce;
-            }
-        }
+
 
         function update() {
             if (gameState !== STATE_PLAYING) return;
@@ -712,8 +709,17 @@
             wormTimer++;
             if (spawnTimer % 300 === 0) gameSpeed += 0.1;
 
-            bird.vy += 0.4;
-            bird.y += bird.vy;
+            // Bird movement based on key presses
+            var moveSpeed = 4;
+            if (keysDown['ArrowUp']) {
+                bird.y -= moveSpeed;
+                bird.vy = -moveSpeed;
+            } else if (keysDown['ArrowDown']) {
+                bird.y += moveSpeed;
+                bird.vy = moveSpeed;
+            } else {
+                bird.vy = 0;
+            }
 
             if (bird.y - bird.size < 0) {
                 bird.y = bird.size;
@@ -901,7 +907,7 @@
             ctx.fillText('\u0438\u043B\u0438 \u043D\u0430\u0436\u043C\u0438 \u043D\u0430 \u043F\u0442\u0438\u0447\u043A\u0443 \u043C\u044B\u0448\u043A\u043E\u0439', W/2, H - 38);
             ctx.fillStyle = '#888';
             ctx.font = '12px Comic Sans MS, cursive';
-            ctx.fillText('\u041F\u0440\u043E\u0431\u0435\u043B / \u041A\u043B\u0438\u043A \u2014 \u0432\u0437\u043C\u0430\u0445 \u043A\u0440\u044B\u043B\u044C\u044F\u043C\u0438', W/2, H - 15);
+            ctx.fillText('\u2191\u2193 \u2014 \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u043F\u0442\u0438\u0446\u0435\u0439', W/2, H - 15);
         }
 
         function drawGameOver() {
@@ -1013,6 +1019,8 @@
         }
 
         document.addEventListener('keydown', function(e) {
+            keysDown[e.key] = true;
+            
             if (gameState === STATE_MENU) {
                 if (e.key === 'ArrowUp') {
                     menuSelection = (menuSelection - 1 + 3) % 3;
@@ -1024,9 +1032,8 @@
                     gameState = STATE_PLAYING;
                 }
             } else if (gameState === STATE_PLAYING) {
-                if (e.key === ' ' || e.key === 'ArrowUp') {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                     e.preventDefault();
-                    flap();
                 }
             } else if (gameState === STATE_GAMEOVER) {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -1036,6 +1043,10 @@
                     gameState = STATE_MENU;
                 }
             }
+        });
+
+        document.addEventListener('keyup', function(e) {
+            keysDown[e.key] = false;
         });
 
         canvas.addEventListener('click', function(e) {
@@ -1057,7 +1068,7 @@
                     }
                 }
             } else if (gameState === STATE_PLAYING) {
-                flap();
+                // No action on click during gameplay
             } else if (gameState === STATE_GAMEOVER) {
                 var btnY = H/2 + 90;
                 if (mx > W/2 - 80 && mx < W/2 + 80 && my > btnY && my < btnY + 40) {
@@ -1073,9 +1084,7 @@
 
         canvas.addEventListener('touchstart', function(e) {
             e.preventDefault();
-            if (gameState === STATE_PLAYING) {
-                flap();
-            } else if (gameState === STATE_GAMEOVER) {
+            if (gameState === STATE_GAMEOVER) {
                 initGame();
                 gameState = STATE_PLAYING;
             }
