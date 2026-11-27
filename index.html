@@ -690,7 +690,7 @@
             scorePopups = [];
             score = 0;
             lives = 3;
-            gameSpeed = 0.6;
+            gameSpeed = 1;
             spawnTimer = 0;
             wormTimer = 0;
             groundOffset = 0;
@@ -707,7 +707,6 @@
             groundOffset -= BIRDS[selectedBird].speed * gameSpeed;
             spawnTimer++;
             wormTimer++;
-            if (spawnTimer % 300 === 0) gameSpeed += 0.1;
 
             // Bird movement based on key presses
             var moveSpeed = 4;
@@ -827,13 +826,7 @@
                 ctx.fillText('\u2764', W - 100 + i * 30, 37);
             }
 
-            ctx.fillStyle = 'rgba(0,0,0,0.4)';
-            roundRect(W/2 - 40, 10, 80, 25, 8);
-            ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.font = '12px Comic Sans MS, cursive';
-            ctx.textAlign = 'center';
-            ctx.fillText('x' + gameSpeed.toFixed(1), W/2, 27);
+
 
             for (var i = 0; i < scorePopups.length; i++) {
                 var p = scorePopups[i];
