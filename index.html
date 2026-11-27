@@ -722,7 +722,6 @@
             if (bird.y + bird.size > H - 80) {
                 bird.y = H - 80 - bird.size;
                 bird.vy = 0;
-                if (invincibleTimer <= 0) loseLife();
             }
 
             var spawnRate = Math.max(80, 140 - gameSpeed * 12);
